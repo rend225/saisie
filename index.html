@@ -34,7 +34,7 @@
 
     select,
     input[type="text"],
-    button {
+    button,input[type="number"] {
       width: 100%;
       padding: 10px;
       margin-bottom: 20px;
@@ -52,19 +52,19 @@
      }
     .select2-selection__arrow {
       border: solid 5px transparent;
-      border-top-color: #333; /* تغيير لون السهم */
+      border-top-color: #333; 
      }
 
      .select2-dropdown {
-  background-color: #f9f9f9; /* تغيير خلفية الـ dropdown */
-  border-radius: 5px; /* جعل حواف الـ dropdown مستديرة */
-  border: 1px solid #ccc; /* تحديد حدود الـ dropdown */
-  margin: 15px; /* إضافة هامش 15px حول الـ dropdown */
+  background-color: #f9f9f9; 
+  border-radius: 5px; 
+  border: 1px solid #ccc;
+  margin: 15px; 
 }
 
     select:focus,
     input[type="text"]:focus,
-    button:focus {
+    button:focus,input[type="number"]:focus {
       outline: none;
       border-color: #3498db;
       box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
@@ -98,9 +98,9 @@
       }
     }
 
-    /* Modal Styles */
+   
     .modal {
-      display: none; /* Hidden by default */
+      display: none; 
       position: fixed;
       z-index: 1;
       left: 0;
@@ -108,7 +108,7 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+      background-color: rgba(0, 0, 0, 0.4);
       padding-top: 60px;
     }
 
@@ -171,7 +171,7 @@
   </style>
   <script>
    $(document).ready(function() {
-      // تفعيل Select2 لجميع الـ select التي تحتوي على الكلاس select2
+   
       $('.select2').select2();
     });
 
@@ -187,7 +187,7 @@
   const additionalInput = document.getElementById("additionalInput").value.trim();
   const calculatedResult = document.getElementById("calculatedResult");
 
-  // Validate inputs
+
   if (!inputAboveComboBox || !additionalInput || isNaN(inputAboveComboBox) || isNaN(additionalInput)) {
     calculatedResult.value = "Entrée invalide!";
     return;
@@ -196,17 +196,17 @@
   const divisor = parseFloat(inputAboveComboBox);
   const dividend = parseFloat(additionalInput);
 
-  // Check for division by zero
+
   if (divisor === 0) {
     calculatedResult.value = "Ne peut pas être divisé par 0!";
     return;
   }
 
-  // Perform division
+
   let result = dividend / divisor;
 
-  // Round the result to the nearest .00, .25, .50, or .75
-  const fractionalPart = result - Math.floor(result); // Extract the fractional part
+ 
+  const fractionalPart = result - Math.floor(result); 
   let roundedFraction = 0;
 
   if (fractionalPart < 0.25) {
@@ -219,18 +219,18 @@
     roundedFraction = 0.75;
   }
 
-  // Combine the integer and rounded fractional part
+
   result = Math.floor(result) + roundedFraction;
 
-  // Display result
-  calculatedResult.value = result.toFixed(2); // Ensure two decimal places
+
+  calculatedResult.value = result.toFixed(2);
 }
 
 
     async function submitForm(event) {
       event.preventDefault();
 
-      // Show the confirmation modal
+
       document.getElementById("confirmationModal").style.display = "block";
     }
 
@@ -335,7 +335,7 @@
       populateTable(filteredData);
     }
 
-    // Fetch data when the page loads
+
     
     
 
@@ -379,14 +379,14 @@
       const tableContainer = document.getElementById("googleSheetData");
       let tableHTML = "<table><thead><tr>";
 
-      // Create table headers dynamically
+
       if (data.length > 0) {
         Object.keys(data[0]).forEach(key => {
           tableHTML += `<th>${key}</th>`;
         });
         tableHTML += "</tr></thead><tbody>";
 
-        // Populate table rows
+      
         data.forEach(row => {
           tableHTML += "<tr>";
           Object.values(row).forEach(value => {
@@ -417,14 +417,14 @@
    
   <form id="dataForm" onsubmit="submitForm(event)">
     <label for="inputAboveComboBox">OBJECTIF :</label>
-    <input type="text" id="inputAboveComboBox" name="inputAboveComboBox" oninput="calculate()" placeholder="Entrez une valeur ici">
+    <input type="number" id="inputAboveComboBox" name="inputAboveComboBox" oninput="calculate()" placeholder="Entrez une valeur ici">
 
     <label for="group">ÉQUIPE :</label>
     <select id="group" name="group" onchange="updateComboBox2()" class="select2">
       <option value="">-- Sélectionner --</option>
     </select>
 
-    <label for="name">NOM :</label>
+    <label for="name">NOMBRE :</label>
     <select id="name" name="name" class="select2">
       <option value="">-- Sélectionner --</option>
     </select>
@@ -435,13 +435,13 @@
     </select>
 
     <label for="additionalInput">QUANTITÉ KG :</label>
-    <input type="text" id="additionalInput" name="additionalInput" oninput="calculate()" placeholder="Entrez des données supplémentaires ici">
+    <input type="number" id="additionalInput" name="additionalInput" oninput="calculate()" placeholder="Entrez des données supplémentaires ici">
 
     <label for="calculatedResult">HEURES ESTIMÉES :</label>
     <input type="text" id="calculatedResult" name="calculatedResult" readonly>
 
     <button type="submit">Envoyer</button>
-    <button type="button" onclick="window.location.href='https://www.youtube.com';">Afficher les données</button>
+    <button type="button" onclick="window.location.href='https://rend225.github.io/donne/';">Afficher les données</button>
   </form>
 
   <!-- Modal -->
