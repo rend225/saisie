@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <title>Formulaire de saisie des données</title>
+  <style>
+    /* Styles généraux */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    form {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    select,
+    input[type="text"],
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .select2-container,.input-container,.button-container {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+     }
+    .select2-selection__arrow {
+      border: solid 5px transparent;
+      border-top-color: #333; /* تغيير لون السهم */
+     }
+
+     .select2-dropdown {
+  background-color: #f9f9f9; /* تغيير خلفية الـ dropdown */
+  border-radius: 5px; /* جعل حواف الـ dropdown مستديرة */
+  border: 1px solid #ccc; /* تحديد حدود الـ dropdown */
+  margin: 15px; /* إضافة هامش 15px حول الـ dropdown */
+}
+
+    select:focus,
+    input[type="text"]:focus,
+    button:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+
+    button {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* Design responsive */
+    @media (max-width: 600px) {
+      form {
+        padding: 15px;
+      }
+
+      button {
+        font-size: 16px;
+      }
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+      padding-top: 60px;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 400px;
+    }
+
+    .modal-footer {
+      text-align: right;
+    }
+
+    .btn-cancel, .btn-confirm {
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .btn-cancel {
+      background-color: #e74c3c;
+      color: #fff;
+    }
+
+    .btn-confirm {
+      background-color: #2ecc71;
+      color: #fff;
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      margin-top: 40px;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #3498db;
+      color: #fff;
+    }
+    .form-container {
+  display: none;
+}
+
+  </style>
+  <script>
+   $(document).ready(function() {
+      // تفعيل Select2 لجميع الـ select التي تحتوي على الكلاس select2
+      $('.select2').select2();
+    });
+
+    function clearSpecificFields() {
+      document.getElementById("name").value = "";
+      document.getElementById("additionalInput").value = "";
+    }
+
+    const apiUrl1 = "https://script.google.com/macros/s/AKfycbzudCjKiq-1I7EXkSZz7MTYmFPyUcLDDlhRM_y2qATdfYNihRD4lAZwvwZrXHcnPdVh/exec"; // Remplacer par l'URL de votre application Web
+
+    function calculate() {
+  const inputAboveComboBox = document.getElementById("inputAboveComboBox").value.trim();
+  const additionalInput = document.getElementById("additionalInput").value.trim();
+  const calculatedResult = document.getElementById("calculatedResult");
+
+  // Validate inputs
+  if (!inputAboveComboBox || !additionalInput || isNaN(inputAboveComboBox) || isNaN(additionalInput)) {
+    calculatedResult.value = "Entrée invalide!";
+    return;
+  }
+
+  const divisor = parseFloat(inputAboveComboBox);
+  const dividend = parseFloat(additionalInput);
+
+  // Check for division by zero
+  if (divisor === 0) {
+    calculatedResult.value = "Ne peut pas être divisé par 0!";
+    return;
+  }
+
+  // Perform division
+  let result = dividend / divisor;
+
+  // Round the result to the nearest .00, .25, .50, or .75
+  const fractionalPart = result - Math.floor(result); // Extract the fractional part
+  let roundedFraction = 0;
+
+  if (fractionalPart < 0.25) {
+    roundedFraction = 0.00;
+  } else if (fractionalPart < 0.5) {
+    roundedFraction = 0.25;
+  } else if (fractionalPart < 0.75) {
+    roundedFraction = 0.50;
+  } else {
+    roundedFraction = 0.75;
+  }
+
+  // Combine the integer and rounded fractional part
+  result = Math.floor(result) + roundedFraction;
+
+  // Display result
+  calculatedResult.value = result.toFixed(2); // Ensure two decimal places
+}
+
+
+    async function submitForm(event) {
+      event.preventDefault();
+
+      // Show the confirmation modal
+      document.getElementById("confirmationModal").style.display = "block";
+    }
+
+    function confirmSubmit() {
+      const form = document.getElementById("dataForm");
+      const formData = new FormData(form);
+
+      fetch(apiUrl1, {
+        method: "POST",
+        body: new URLSearchParams(formData),
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.status === "success") {
+          alert("Les données ont été envoyées avec succès.");
+          clearSpecificFields();
+        } else {
+          alert("Erreur : " + result.message);
+        }
+        document.getElementById("confirmationModal").style.display = "none";
+      })
+      .catch(error => {
+        console.error("Erreur de soumission :", error);
+        document.getElementById("confirmationModal").style.display = "none";
+      });
+    }
+
+    function cancelSubmit() {
+      document.getElementById("confirmationModal").style.display = "none";
+    }
+
+    
+
+    let groupData = {};
+    let combobox3Data = [];
+
+    async function fetchData() {
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxkq3uQOgKIitmMpNl4n2r9yNSPCIXGLB_twxuaW8V4lgrfH7DRtrPF6DZNi_6vUcbc9Q/exec");
+        const data = await response.json();
+
+        groupData = data.groups;
+        combobox3Data = data.combobox3Data;
+
+        populateComboBox1();
+        populateComboBox3();
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données :", error);
+        alert("Une erreur s'est produite lors de la récupération des données.");
+      }
+    }
+
+    async function fetchD1() {
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbx1NAGRvv1q43LxLT776_iGmlzocPsF4h6Dw6016_vOsv9EKaKBkRjPSGgwAsU5-Kx2bg/exec'); // Replace with your actual URL
+        data = await response.json(); 
+
+        populateTable(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    function populateTable(filteredData) {
+      const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+      tableBody.innerHTML = '';  // Clear previous rows
+
+      filteredData.forEach(row => {
+        const tr = document.createElement('tr');
+
+        Object.values(row).forEach(value => {
+          const td = document.createElement('td');
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function applyFilters() {
+      const timestampFilter = document.getElementById('filter-timestamp').value.toLowerCase();
+      const objectiveFilter = document.getElementById('filter-objective').value.toLowerCase();
+      const groupFilter = document.getElementById('filter-group').value.toLowerCase();
+      const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+      const taskFilter = document.getElementById('filter-task').value.toLowerCase();
+      const quantityFilter = document.getElementById('filter-quantity').value.toLowerCase();
+      const hoursFilter = document.getElementById('filter-hours').value.toLowerCase();
+
+      const filteredData = data.filter(row => {
+        return (
+          (row.timestamp.toLowerCase().includes(timestampFilter) || !timestampFilter) &&
+          (row.objective.toLowerCase().includes(objectiveFilter) || !objectiveFilter) &&
+          (row.group.toLowerCase().includes(groupFilter) || !groupFilter) &&
+          (row.name.toLowerCase().includes(nameFilter) || !nameFilter) &&
+          (row.task.toLowerCase().includes(taskFilter) || !taskFilter) &&
+          (row.quantity.toLowerCase().includes(quantityFilter) || !quantityFilter) &&
+          (row.hours.toLowerCase().includes(hoursFilter) || !hoursFilter)
+        );
+      });
+
+      populateTable(filteredData);
+    }
+
+    // Fetch data when the page loads
+    
+    
+
+    function populateComboBox1() {
+      const comboBox1 = document.getElementById("group");
+      Object.keys(groupData).forEach(group => {
+        const option = document.createElement("option");
+        option.value = group;
+        option.textContent = group;
+        comboBox1.appendChild(option);
+      });
+    }
+
+    function populateComboBox3() {
+      const comboBox3 = document.getElementById("combobox3");
+      combobox3Data.forEach(task => {
+        const option = document.createElement("option");
+        option.value = task;
+        option.textContent = task;
+        comboBox3.appendChild(option);
+      });
+    }
+
+    function updateComboBox2() {
+      const comboBox1 = document.getElementById("group");
+      const comboBox2 = document.getElementById("name");
+      const selectedGroup = comboBox1.value;
+
+      comboBox2.innerHTML = '<option value="">-- Sélectionner --</option>';
+      if (groupData[selectedGroup]) {
+        groupData[selectedGroup].forEach(name => {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          comboBox2.appendChild(option);
+        });
+      }
+    }
+
+    function displayGoogleSheetData(data) {
+      const tableContainer = document.getElementById("googleSheetData");
+      let tableHTML = "<table><thead><tr>";
+
+      // Create table headers dynamically
+      if (data.length > 0) {
+        Object.keys(data[0]).forEach(key => {
+          tableHTML += `<th>${key}</th>`;
+        });
+        tableHTML += "</tr></thead><tbody>";
+
+        // Populate table rows
+        data.forEach(row => {
+          tableHTML += "<tr>";
+          Object.values(row).forEach(value => {
+            tableHTML += `<td>${value}</td>`;
+          });
+          tableHTML += "</tr>";
+        });
+
+        tableHTML += "</tbody></table>";
+      }
+
+      tableContainer.innerHTML = tableHTML;
+    }
+
+    window.onload = function() {
+    
+    fetchData();
+};
+
+
+
+
+
+  </script>
+</head>
+<body>
+    
+   
+  <form id="dataForm" onsubmit="submitForm(event)">
+    <label for="inputAboveComboBox">OBJECTIF :</label>
+    <input type="text" id="inputAboveComboBox" name="inputAboveComboBox" oninput="calculate()" placeholder="Entrez une valeur ici">
+
+    <label for="group">ÉQUIPE :</label>
+    <select id="group" name="group" onchange="updateComboBox2()" class="select2">
+      <option value="">-- Sélectionner --</option>
+    </select>
+
+    <label for="name">NOM :</label>
+    <select id="name" name="name" class="select2">
+      <option value="">-- Sélectionner --</option>
+    </select>
+
+    <label for="combobox3">PARCELLES :</label>
+    <select id="combobox3" name="combobox3" class="select2">
+      <option value="">-- Sélectionner --</option>
+    </select>
+
+    <label for="additionalInput">QUANTITÉ KG :</label>
+    <input type="text" id="additionalInput" name="additionalInput" oninput="calculate()" placeholder="Entrez des données supplémentaires ici">
+
+    <label for="calculatedResult">HEURES ESTIMÉES :</label>
+    <input type="text" id="calculatedResult" name="calculatedResult" readonly>
+
+    <button type="submit">Envoyer</button>
+    <button type="button" onclick="window.location.href='https://www.youtube.com';">Afficher les données</button>
+  </form>
+
+  <!-- Modal -->
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <p>Êtes-vous sûr de vouloir soumettre le formulaire ?</p>
+      <div class="modal-footer">
+        <button class="btn-confirm" onclick="confirmSubmit()">Confirmer</button>
+        <button class="btn-cancel" onclick="cancelSubmit()">Annuler</button>
+        
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
